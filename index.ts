@@ -174,6 +174,7 @@ export default class NativeUI {
 	private _bindToPosition: Vector3Mp;
 	private _bindToPositionRange: number;
 	private _bindToPositionClose: boolean;
+	private _hasSelectedMenuItem: boolean = false;
 
 	private readonly _mainMenu: Container;
 	private readonly _logo: Sprite;
@@ -436,7 +437,7 @@ export default class NativeUI {
 
 		this.Visible = false;
 		this.RefreshIndex();
-		this.MenuClose.emit(true);
+		this.MenuClose.emit(true, this._hasSelectedMenuItem);
 	}
 
 	set Subtitle(text: string) {
@@ -528,6 +529,9 @@ export default class NativeUI {
 				this.Visible = false;
 				subMenu.Visible = true;
 				this.MenuChange.emit(subMenu, true);
+			}
+			else {
+				this._hasSelectedMenuItem = true;
 			}
 		}
 		it.fireEvent();
@@ -866,7 +870,7 @@ export default class NativeUI {
 			this.ParentMenu.Visible = true;
 			this.MenuChange.emit(this.ParentMenu, false);
 		}
-		this.MenuClose.emit(false);
+		this.MenuClose.emit(false, false);
 	}
 
 	/**
