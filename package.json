@@ -7,6 +7,9 @@
 	"author": "GamingMaster",
 	"license": "Apache-2.0",
 	"private": false,
+	"scripts": {
+		"start": "gulp build"
+	},
 	"dependencies": {
 		"ajv": "^6.8.1"
 	},

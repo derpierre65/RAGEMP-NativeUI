@@ -1,27 +1,25 @@
-import BadgeStyle from "./enums/BadgeStyle";
-import Font from "./enums/Font";
-import UIMenuCheckboxItem from "./items/UIMenuCheckboxItem";
-import UIMenuItem from "./items/UIMenuItem";
-import UIMenuListItem from "./items/UIMenuListItem";
-import UIMenuDynamicListItem from "./items/UIMenuDynamicListItem";
-import UIMenuSliderItem from "./items/UIMenuSliderItem";
-import Container from "./modules/Container";
-import ItemsCollection from "./modules/ItemsCollection";
-import ListItem from "./modules/ListItem";
-import ResRectangle from "./modules/ResRectangle";
-import ResText, { Alignment } from "./modules/ResText";
-import Sprite from "./modules/Sprite";
-import Color from "./utils/Color";
-import Common from "./utils/Common";
-import LiteEvent from "./utils/LiteEvent";
-import Point from "./utils/Point";
-import Size from "./utils/Size";
-import UUIDV4 from "./utils/UUIDV4";
-import { Screen } from "./utils/Screen";
+import BadgeStyle from './enums/BadgeStyle';
+import Font from './enums/Font';
+import UIMenuCheckboxItem from './items/UIMenuCheckboxItem';
+import UIMenuItem from './items/UIMenuItem';
+import UIMenuListItem from './items/UIMenuListItem';
+import UIMenuDynamicListItem from './items/UIMenuDynamicListItem';
+import UIMenuSliderItem from './items/UIMenuSliderItem';
+import Container from './modules/Container';
+import ItemsCollection from './modules/ItemsCollection';
+import ListItem from './modules/ListItem';
+import ResRectangle from './modules/ResRectangle';
+import ResText, {Alignment} from './modules/ResText';
+import Sprite from './modules/Sprite';
+import Color from './utils/Color';
+import Common from './utils/Common';
+import LiteEvent from './utils/LiteEvent';
+import Point from './utils/Point';
+import Size from './utils/Size';
+import UUIDV4 from './utils/UUIDV4';
+import {Screen} from './utils/Screen';
 
-let
-	menuPool = []
-;
+let menuPool = [];
 
 export default class NativeUI {
 	public readonly Id: string = UUIDV4();
@@ -140,6 +138,7 @@ export default class NativeUI {
 			}
 			if(menuPool.length === 0) {
 				mp.game.invoke('0x8DB8CFFD58B62552'.toUpperCase(), 1);
+				console.log('ey joa keine menüs mehr offen');
 			}
 		}
 	}
@@ -173,6 +172,9 @@ export default class NativeUI {
 	public readonly MenuChange = new LiteEvent();
 
 	private MouseEdgeEnabled: boolean = true;
+	private _bindToPosition: Vector3Mp;
+	private _bindToPositionRange: number;
+	private _bindToPositionClose: boolean;
 
 	private readonly _mainMenu: Container;
 	private readonly _logo: Sprite;
@@ -868,10 +870,24 @@ export default class NativeUI {
 		this.MenuClose.emit(false);
 	}
 
+	/**
+	 *
+	 * @param position Vector3Mp
+	 * @param range number
+	 * @param close boolean (set to false to hide the menu, set to true to close the menu)
+	 * @constructor
+	 */
+	public BindMenuToPosition(position: Vector3Mp, range: number, close: boolean = true) {
+		this._bindToPosition = position;
+		this._bindToPositionRange = range;
+		this._bindToPositionClose = close;
+	}
+
 	public BindMenuToItem(menuToBind: NativeUI, itemToBindTo: UIMenuItem) {
 		if(!this.MenuItems.includes(itemToBindTo)) {
 			this.AddItem(itemToBindTo);
 		}
+
 		menuToBind.ParentMenu = this;
 		menuToBind.ParentItem = itemToBindTo;
 		this.Children.set(itemToBindTo.Id, menuToBind);
@@ -879,17 +895,18 @@ export default class NativeUI {
 
 	public ReleaseMenuFromItem(releaseFrom: UIMenuItem) {
 		if (!this.Children.has(releaseFrom.Id)) return false;
+
 		const menu: NativeUI = this.Children.get(releaseFrom.Id);
 		menu.ParentItem = null;
 		menu.ParentMenu = null;
 		this.Children.delete(releaseFrom.Id);
+
 		return true;
 	}
 
 	public UpdateDescriptionCaption() {
 		if (this.MenuItems.length) {
-			const descCaption = this.MenuItems[this._activeItem % this.MenuItems.length].Description;
-			this._descriptionText.caption = descCaption;
+			this._descriptionText.caption = this.MenuItems[this._activeItem % this.MenuItems.length].Description;
 			this._descriptionText.Wrap = 400;
 			this.recalculateDescriptionNextFrame++;
 		}
@@ -915,6 +932,19 @@ export default class NativeUI {
 
 	private render() {
 		if (!this.Visible) return;
+
+		let bindPosition = this._bindToPosition;
+		if (bindPosition !== null) {
+			let playerPos = mp.players.local.position;
+			if (mp.game.system.vdist(playerPos.x, playerPos.y, playerPos.z, bindPosition.x, bindPosition.y, bindPosition.z) > this._bindToPositionRange) {
+				if (this._bindToPositionClose) {
+					this.Close();
+				}
+				else {
+					this.Visible = false;
+				}
+			}
+		}
 
 		if (this._justOpened) {
 			if (this._logo != null && !this._logo.IsTextureDictionaryLoaded)
