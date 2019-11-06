@@ -522,16 +522,19 @@ export default class NativeUI {
 			Common.PlaySound(this.AUDIO_SELECT, this.AUDIO_LIBRARY);
 			this.CheckboxChange.emit(it, it.Checked);
 		} else {
+			let hasChildren = this.Children.has(it.Id);
+
 			Common.PlaySound(this.AUDIO_SELECT, this.AUDIO_LIBRARY);
+			if (!hasChildren) {
+				this._hasSelectedMenuItem = true;
+			}
+
 			this.ItemSelect.emit(it, this.CurrentSelection);
-			if (this.Children.has(it.Id)) {
+			if (hasChildren) {
 				const subMenu = this.Children.get(it.Id);
 				this.Visible = false;
 				subMenu.Visible = true;
 				this.MenuChange.emit(subMenu, true);
-			}
-			else {
-				this._hasSelectedMenuItem = true;
 			}
 		}
 		it.fireEvent();
@@ -639,6 +642,7 @@ export default class NativeUI {
 								case 1:
 									Common.PlaySound(this.AUDIO_SELECT, this.AUDIO_LIBRARY);
 									//this.MenuItems[i].ItemActivate(this);
+									this._hasSelectedMenuItem = true;
 									this.MenuItems[i].fireEvent();
 									this.ItemSelect.emit(this.MenuItems[i], i);
 									break;
