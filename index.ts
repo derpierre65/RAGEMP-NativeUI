@@ -138,7 +138,6 @@ export default class NativeUI {
 			}
 			if(menuPool.length === 0) {
 				mp.game.invoke('0x8DB8CFFD58B62552'.toUpperCase(), 1);
-				console.log('ey joa keine menüs mehr offen');
 			}
 		}
 	}
@@ -1030,6 +1029,11 @@ export default class NativeUI {
 	}
 }
 
+function isMenuOpen() {
+	return menuPool.length > 0;
+}
+
+exports.isMenuOpen = isMenuOpen;
 exports.Menu = NativeUI;
 exports.UIMenuItem = UIMenuItem;
 exports.UIMenuListItem = UIMenuListItem;
