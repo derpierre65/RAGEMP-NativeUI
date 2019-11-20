@@ -40,5 +40,3 @@ export default class Text extends IElement {
 		mp.game.ui.drawText(x, y);
 	}
 }
-
-exports = Text;

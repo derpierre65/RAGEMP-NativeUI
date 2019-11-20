@@ -941,7 +941,7 @@ export default class NativeUI {
 		if (!this.Visible) return;
 
 		let bindPosition = this._bindToPosition;
-		if (bindPosition !== null) {
+		if (bindPosition) {
 			let playerPos = mp.players.local.position;
 			if (mp.game.system.vdist(playerPos.x, playerPos.y, playerPos.z, bindPosition.x, bindPosition.y, bindPosition.z) > this._bindToPositionRange) {
 				if (this._bindToPositionClose) {
