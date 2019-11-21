@@ -1,15 +1,15 @@
-import BadgeStyle from "../enums/BadgeStyle";
-import Font from "../enums/Font";
-import ItemsCollection from "../modules/ItemsCollection";
-import ListItem from "../modules/ListItem";
-import ResText, { Alignment } from "../modules/ResText";
-import Sprite from "../modules/Sprite";
-import Color from "../utils/Color";
-import LiteEvent from "../utils/LiteEvent";
-import Point from "../utils/Point";
-import Size from "../utils/Size";
-import { Screen } from "../utils/Screen";
-import UIMenuItem from "./UIMenuItem";
+import BadgeStyle from '../enums/BadgeStyle';
+import Font from '../enums/Font';
+import ItemsCollection from '../modules/ItemsCollection';
+import ListItem from '../modules/ListItem';
+import ResText, {Alignment} from '../modules/ResText';
+import Sprite from '../modules/Sprite';
+import Color from '../utils/Color';
+import LiteEvent from '../utils/LiteEvent';
+import Point from '../utils/Point';
+import Size from '../utils/Size';
+import {Screen} from '../utils/Screen';
+import UIMenuItem from './UIMenuItem';
 
 export default class UIMenuListItem extends UIMenuItem {
 	protected _itemText: ResText;
@@ -30,15 +30,17 @@ export default class UIMenuListItem extends UIMenuItem {
 	get Collection() {
 		return this.collection;
 	}
+
 	set Collection(v) {
-		if (!v) throw new Error("The collection can't be null");
+		if (!v) {
+			throw new Error('The collection can\'t be null');
+		}
 		this.collection = v;
 	}
 
 	set SelectedItem(v: ListItem) {
 		const idx = this.Collection.findIndex(li => li.Id === v.Id);
-		if (idx > 0) this.Index = idx;
-		else this.Index = 0;
+		this.Index = idx > 0 ? idx : 0;
 	}
 
 	get SelectedItem() {
@@ -49,8 +51,8 @@ export default class UIMenuListItem extends UIMenuItem {
 		return this.SelectedItem == null
 			? null
 			: this.SelectedItem.Data == null
-			? this.SelectedItem.DisplayText
-			: this.SelectedItem.Data;
+				? this.SelectedItem.DisplayText
+				: this.SelectedItem.Data;
 	}
 
 	private readonly OnListChanged = new LiteEvent();
@@ -62,49 +64,47 @@ export default class UIMenuListItem extends UIMenuItem {
 	protected _index: number = 0;
 
 	get Index() {
-		if (this.Collection == null) return -1;
-		if (this.Collection != null && this.Collection.length == 0) return -1;
+		if (this.Collection == null || this.Collection.length == 0) {
+			return -1;
+		}
 
 		return this._index % this.Collection.length;
 	}
+
 	set Index(value) {
-		if (this.Collection == null) return;
-		if (this.Collection != null && this.Collection.length == 0) return;
+		if (this.Collection == null || this.Collection.length == 0) {
+			return;
+		}
 
 		this._index = 100000 - (100000 % this.Collection.length) + value;
 
-		const caption =
-			this.Collection.length >= this.Index
-				? this.Collection[this.Index].DisplayText
-				: " ";
-		this.currOffset = Screen.GetTextWidth(caption, this._itemText && this._itemText.font ? this._itemText.font : 0, 0.35); // this._itemText && this._itemText.font ? this._itemText.font : 0, this._itemText && this._itemText.scale ? this._itemText.scale : 0.35
+		const caption = this.Collection.length >= this.Index
+			? this.Collection[this.Index].DisplayText
+			: ' ';
+		this.currOffset = Screen.GetTextWidth(caption, this._itemText && this._itemText.font ? this._itemText.font : 0, 0.35);
+		// this._itemText && this._itemText.font ? this._itemText.font : 0, this._itemText && this._itemText.scale ? this._itemText.scale : 0.35
 	}
 
-	constructor(
-		text: string,
-		description: string = "",
-		collection: ItemsCollection = new ItemsCollection([]),
-		startIndex: number = 0,
-		data = null
-	) {
+	constructor(text: string, description: string = '', collection: ItemsCollection = new ItemsCollection([]), startIndex: number = 0, data = null) {
 		super(text, description, data);
+
 		let y = 0;
 		this.Collection = collection.getListItems();
 		this.Index = startIndex;
 		this._arrowLeft = new Sprite(
-			"commonmenu",
-			"arrowleft",
+			'commonmenu',
+			'arrowleft',
 			new Point(110, 105 + y),
 			new Size(30, 30)
 		);
 		this._arrowRight = new Sprite(
-			"commonmenu",
-			"arrowright",
+			'commonmenu',
+			'arrowright',
 			new Point(280, 105 + y),
 			new Size(30, 30)
 		);
 		this._itemText = new ResText(
-			"",
+			'',
 			new Point(290, y + 104),
 			0.35,
 			Color.White,
@@ -117,23 +117,22 @@ export default class UIMenuListItem extends UIMenuItem {
 		this.Collection = collection.getListItems();
 	}
 
-	public setCollectionItem(
-		index: number,
-		item: ListItem | string,
-		resetSelection: boolean = true
-	) {
-		if (index > this.Collection.length)
-			// Placeholder for formatting
-			throw new Error("Index out of bounds");
-		if (typeof item === "string")
-			// Placeholder for formatting
+	public setCollectionItem(index: number, item: ListItem | string, resetSelection: boolean = true) {
+		// Placeholder for formatting
+		if (index > this.Collection.length) {
+			throw new Error('Index out of bounds');
+		}
+		// Placeholder for formatting
+		if (typeof item === 'string') {
 			item = new ListItem(item);
+		}
 
 		this.Collection.splice(index, 1, item);
 
-		if (resetSelection)
-			// Placeholder for formatting
+		// Placeholder for formatting
+		if (resetSelection) {
 			this.Index = 0;
+		}
 	}
 
 	public SetVerticalPosition(y: number) {
@@ -162,10 +161,10 @@ export default class UIMenuListItem extends UIMenuItem {
 
 	public Draw() {
 		super.Draw();
-		const caption =
-			this.Collection.length >= this.Index
-				? this.Collection[this.Index].DisplayText
-				: " ";
+
+		const caption = this.Collection.length >= this.Index
+			? this.Collection[this.Index].DisplayText
+			: ' ';
 		const offset = this.currOffset;
 
 		this._itemText.color = this.Enabled
@@ -199,7 +198,8 @@ export default class UIMenuListItem extends UIMenuItem {
 				405 + this.Offset.X + this.Parent.WidthOffset,
 				this._itemText.pos.Y
 			);
-		} else {
+		}
+		else {
 			this._itemText.pos = new Point(
 				420 + this.Offset.X + this.Parent.WidthOffset,
 				this._itemText.pos.Y

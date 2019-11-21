@@ -383,14 +383,15 @@ export default class NativeUI {
 
 	public AddItem(item: UIMenuItem) {
 		if (this._justOpened) this._justOpened = false;
+
 		item.Offset = this.offset;
 		item.Parent = this;
-		item.SetVerticalPosition(
-			this.MenuItems.length * 25 - 37 + this.extraOffset
-		);
-		this.MenuItems.push(item);
 
+		item.SetVerticalPosition(this.MenuItems.length * 25 - 37 + this.extraOffset);
+		this.MenuItems.push(item);
 		this.RefreshIndex();
+
+		return item.Id;
 	}
 
 	public RemoveItem(item: UIMenuItem) {
