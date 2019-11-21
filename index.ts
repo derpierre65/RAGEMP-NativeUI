@@ -381,8 +381,10 @@ export default class NativeUI {
 		}
 	}
 
-	public AddItem(item: UIMenuItem) {
-		if (this._justOpened) this._justOpened = false;
+	public AddItem(item: UIMenuItem, enabled: boolean = true) {
+		if (this._justOpened) {
+			this._justOpened = false;
+		}
 
 		item.Offset = this.offset;
 		item.Parent = this;
@@ -390,6 +392,10 @@ export default class NativeUI {
 		item.SetVerticalPosition(this.MenuItems.length * 25 - 37 + this.extraOffset);
 		this.MenuItems.push(item);
 		this.RefreshIndex();
+
+		if (!enabled) {
+			item.Enabled = false;
+		}
 
 		return item.Id;
 	}
@@ -401,6 +407,29 @@ export default class NativeUI {
 			}
 		}
 		this.RefreshIndex();
+	}
+
+	public DisableItem(itemId: string | number) {
+		return this.EnableItem(itemId, false);
+	}
+
+	/**
+	 * @param {string|number} itemId - UIMenuItem.Id or menu item index
+	 * @param {boolean} enabled
+	 * @constructor
+	 */
+	public EnableItem(itemId: string | number, enabled: boolean = true) {
+		if (typeof itemId === 'string') {
+			for (let item of this.MenuItems) {
+				if (item.Id === itemId) {
+					item.Enabled = enabled;
+					break;
+				}
+			}
+		}
+		else if (typeof itemId === 'number' && this.MenuItems[itemId]) {
+			this.MenuItems[itemId].Enabled = enabled;
+		}
 	}
 
 	public RefreshIndex() {
