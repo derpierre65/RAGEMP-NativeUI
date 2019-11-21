@@ -9,8 +9,9 @@ import Point from "../utils/Point";
 import Size from "../utils/Size";
 import { Screen } from "../utils/Screen";
 import UUIDV4 from "../utils/UUIDV4";
+import CustomVariables from '../utils/CustomVariables';
 
-export default class UIMenuItem {
+export default class UIMenuItem extends CustomVariables {
 	public readonly Id: string = UUIDV4();
 
 	public static readonly DefaultBackColor: Color = Color.Empty;
@@ -66,6 +67,8 @@ export default class UIMenuItem {
 	public RightBadge: BadgeStyle = BadgeStyle.None;
 
 	constructor(text, description = "", data = null) {
+		super();
+
 		this.Enabled = true;
 		this.Data = data;
 

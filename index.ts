@@ -18,10 +18,11 @@ import Point from './utils/Point';
 import Size from './utils/Size';
 import UUIDV4 from './utils/UUIDV4';
 import {Screen} from './utils/Screen';
+import CustomVariables from './utils/CustomVariables';
 
 let menuPool = [];
 
-export default class NativeUI {
+export default class NativeUI extends CustomVariables {
 	public readonly Id: string = UUIDV4();
 
 	private _visible: boolean = true;
@@ -190,6 +191,8 @@ export default class NativeUI {
 	private readonly _background: Sprite;
 
 	constructor(title, subtitle, offset, spriteLibrary, spriteName) {
+		super();
+
 		if (!(offset instanceof Point)) offset = Point.Parse(offset);
 
 		this.title = title;

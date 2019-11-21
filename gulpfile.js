@@ -9,3 +9,10 @@ gulp.task('build', function () {
 		.pipe(stripDebug())
 		.pipe(gulp.dest('./'));
 });
+
+gulp.task('dev', function () {
+	return gulp
+		.src('index.ts')
+		.pipe(webpack(require('./webpack.config')))
+		.pipe(gulp.dest('./'));
+});
