@@ -400,6 +400,8 @@ export default class NativeUI extends CustomVariables {
 			item.Enabled = false;
 		}
 
+		this.UpdateDescriptionCaption();
+
 		return item.Id;
 	}
 
@@ -410,6 +412,7 @@ export default class NativeUI extends CustomVariables {
 			}
 		}
 		this.RefreshIndex();
+		this.UpdateDescriptionCaption();
 	}
 
 	public DisableItem(itemId: string | number) {
@@ -982,6 +985,7 @@ export default class NativeUI extends CustomVariables {
 				}
 				else {
 					this.Visible = false;
+					return;
 				}
 			}
 		}
