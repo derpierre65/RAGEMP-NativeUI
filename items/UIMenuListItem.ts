@@ -13,65 +13,11 @@ import UIMenuItem from './UIMenuItem';
 
 export default class UIMenuListItem extends UIMenuItem {
 	protected _itemText: ResText;
-
 	protected _arrowLeft: Sprite;
 	protected _arrowRight: Sprite;
-
-	private currOffset: number = 0;
-
-	private collection: Array<ListItem> = [];
-
-	get Collection() {
-		return this.collection;
-	}
-
-	set Collection(v) {
-		if (!v) {
-			throw new Error('The collection can\'t be null');
-		}
-		this.collection = v;
-	}
-
-	set SelectedItem(v: ListItem) {
-		const idx = this.Collection.findIndex(li => li.Id === v.Id);
-		this.Index = idx > 0 ? idx : 0;
-	}
-
-	get SelectedItem() {
-		return this.Collection.length > 0 ? this.Collection[this.Index] : null;
-	}
-
-	get SelectedValue() {
-		return this.SelectedItem == null
-			? null
-			: this.SelectedItem.Data == null
-				? this.SelectedItem.DisplayText
-				: this.SelectedItem.Data;
-	}
-
 	protected _index: number = 0;
-
-	get Index() {
-		if (this.Collection == null || this.Collection.length == 0) {
-			return -1;
-		}
-
-		return this._index % this.Collection.length;
-	}
-
-	set Index(value) {
-		if (this.Collection == null || this.Collection.length == 0) {
-			return;
-		}
-
-		this._index = 100000 - (100000 % this.Collection.length) + value;
-
-		const caption = this.Collection.length >= this.Index
-			? this.Collection[this.Index].DisplayText
-			: ' ';
-		this.currOffset = Screen.GetTextWidth(caption, this._itemText && this._itemText.font ? this._itemText.font : 0, 0.35);
-		// this._itemText && this._itemText.font ? this._itemText.font : 0, this._itemText && this._itemText.scale ? this._itemText.scale : 0.35
-	}
+	private currOffset: number = 0;
+	private collection: Array<ListItem> = [];
 
 	constructor(text: string, description: string = '', collection: ItemsCollection = new ItemsCollection([]), startIndex: number = 0, data: any = null) {
 		super(text, description, data);
@@ -158,5 +104,59 @@ export default class UIMenuListItem extends UIMenuItem {
 			);
 		}
 		this._itemText.Draw();
+	}
+
+	get Value() {
+		return this.Collection[this.Index].Data;
+	}
+
+	get Collection() {
+		return this.collection;
+	}
+
+	set Collection(v) {
+		if (!v) {
+			throw new Error('The collection can\'t be null');
+		}
+		this.collection = v;
+	}
+
+	set SelectedItem(v: ListItem) {
+		const idx = this.Collection.findIndex(li => li.Id === v.Id);
+		this.Index = idx > 0 ? idx : 0;
+	}
+
+	get SelectedItem() {
+		return this.Collection.length > 0 ? this.Collection[this.Index] : null;
+	}
+
+	get SelectedValue() {
+		return this.SelectedItem == null
+			? null
+			: this.SelectedItem.Data == null
+				? this.SelectedItem.DisplayText
+				: this.SelectedItem.Data;
+	}
+
+	get Index() {
+		if (this.Collection == null || this.Collection.length == 0) {
+			return -1;
+		}
+
+		return this._index % this.Collection.length;
+	}
+
+	set Index(value) {
+		if (this.Collection == null || this.Collection.length == 0) {
+			return;
+		}
+
+		this._index = 100000 - (100000 % this.Collection.length) + value;
+
+		const caption = this.Collection.length >= this.Index
+			? this.Collection[this.Index].DisplayText
+			: ' ';
+		this.currOffset = Screen.GetTextWidth(caption, this._itemText && this._itemText.font ? this._itemText.font : 0, 0.35);
+		// this._itemText && this._itemText.font ? this._itemText.font : 0, this._itemText && this._itemText.scale ? this._itemText.scale : 0.35
 	}
 }

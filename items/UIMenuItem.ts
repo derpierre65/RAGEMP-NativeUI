@@ -173,17 +173,21 @@ export default class UIMenuItem extends CustomVariables {
 
 	public SetLeftBadge(badge: BadgeStyle) {
 		this.LeftBadge = badge;
+
+		return this;
 	}
 
 	public SetRightBadge(badge: BadgeStyle) {
 		this.RightBadge = badge;
+
+		return this;
 	}
 
 	public SetRightLabel(text: string) {
 		this.RightLabel = text;
 	}
 
-	BadgeToSpriteLib(badge: BadgeStyle) {
+	public BadgeToSpriteLib(badge: BadgeStyle) {
 		switch (badge) {
 			case BadgeStyle.Sale:
 				return 'mpshopsale';
@@ -198,7 +202,7 @@ export default class UIMenuItem extends CustomVariables {
 		}
 	}
 
-	BadgeToSpriteName(badge: BadgeStyle, selected: boolean) {
+	public BadgeToSpriteName(badge: BadgeStyle, selected: boolean) {
 		switch (badge) {
 			case BadgeStyle.None:
 				return '';
@@ -267,7 +271,7 @@ export default class UIMenuItem extends CustomVariables {
 		}
 	}
 
-	IsBadgeWhiteSprite(badge: BadgeStyle) {
+	public IsBadgeWhiteSprite(badge: BadgeStyle) {
 		switch (badge) {
 			case BadgeStyle.Lock:
 			case BadgeStyle.Tick:
@@ -278,7 +282,7 @@ export default class UIMenuItem extends CustomVariables {
 		}
 	}
 
-	BadgeToColor(badge: BadgeStyle, selected: boolean): Color {
+	public BadgeToColor(badge: BadgeStyle, selected: boolean): Color {
 		switch (badge) {
 			case BadgeStyle.Lock:
 			case BadgeStyle.Tick:
@@ -289,6 +293,10 @@ export default class UIMenuItem extends CustomVariables {
 			default:
 				return new Color(255, 255, 255, 255);
 		}
+	}
+
+	get Value() {
+		return null;
 	}
 
 	get Text() {

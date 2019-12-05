@@ -11,21 +11,15 @@ import UIMenuItem from './UIMenuItem';
 
 export default class UIMenuDynamicListItem extends UIMenuItem {
 	protected _itemText: ResText;
-
 	protected _arrowLeft: Sprite;
 	protected _arrowRight: Sprite;
-
 	private currOffset: number = 0;
-
 	private _leftMoveThreshold: number = 1;
 	private _rightMoveThreshold: number = 1;
-
 	private _lowerThreshold: number = 0;
 	private _upperThreshold: number = 10;
-
 	private _preText: string = '';
 	private _postText: string = '';
-
 	private _value: number;
 
 	constructor(text: string, description: string = '', lowerThreshold: number = 0, upperThreshold: number = 10, startValue: number = 0, data:any = null) {
@@ -112,6 +106,10 @@ export default class UIMenuDynamicListItem extends UIMenuItem {
 			this._itemText && this._itemText.font ? this._itemText.font : 0,
 			this._itemText && this._itemText.scale ? this._itemText.scale : 0.35
 		);
+	}
+
+	get Value() {
+		return this._value;
 	}
 
 	get Text() {

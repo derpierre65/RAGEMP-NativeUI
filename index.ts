@@ -93,6 +93,7 @@ export default class NativeUI extends CustomVariables {
 	get TitleText(): string {
 		return this._title.caption;
 	}
+
 	set TitleText(text: string) {
 		this._title.caption = text;
 	}
@@ -104,6 +105,7 @@ export default class NativeUI extends CustomVariables {
 	get SubTitleText(): string {
 		return this._subtitle.caption;
 	}
+
 	set SubTitleText(text: string) {
 		this._subtitle.caption = text;
 	}
@@ -481,7 +483,7 @@ export default class NativeUI extends CustomVariables {
 		this._activeItem = 1000 - (1000 % this.MenuItems.length);
 		this._maxItem = this.MaxItemsOnScreen;
 		this._minItem = 0;
-		if(this._visible) {
+		if (this._visible) {
 			this.UpdateDescriptionCaption();
 		}
 	}
@@ -496,7 +498,7 @@ export default class NativeUI extends CustomVariables {
 	}
 
 	private CleanUp(closeChildren: boolean = false) {
-		if(closeChildren) {
+		if (closeChildren) {
 			this.Children.forEach(m => {
 				m.Close(true);
 			});
@@ -988,7 +990,8 @@ export default class NativeUI extends CustomVariables {
 		if (this.ParentMenu != null) {
 			this.ParentMenu.Visible = true;
 			this.MenuChange.emit(this.ParentMenu, false);
-		} else {
+		}
+		else {
 			this.CleanUp(true);
 		}
 		this.MenuClose.emit(false, false);
@@ -1163,6 +1166,15 @@ export default class NativeUI extends CustomVariables {
 		}
 
 		this._logo.Draw();
+	}
+
+	get Values() {
+		let obj = {};
+		for (let item of this.MenuItems) {
+			obj[item.Name] = item.Value;
+		}
+
+		return obj;
 	}
 }
 

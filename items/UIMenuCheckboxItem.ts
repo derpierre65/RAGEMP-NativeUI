@@ -12,33 +12,24 @@ export default class UIMenuCheckboxItem extends UIMenuItem {
 
 	constructor(text: string, check: boolean = false, description: string = '') {
 		super(text, description);
+
 		const y = 0;
-		this._checkedSprite = new Sprite(
-			'commonmenu',
-			'shop_box_blank',
-			new Point(410, y + 95),
-			new Size(50, 50)
-		);
+		this._checkedSprite = new Sprite('commonmenu', 'shop_box_blank', new Point(410, y + 95), new Size(50, 50));
 		this.Checked = check;
 	}
 
 	public SetVerticalPosition(y: number) {
 		super.SetVerticalPosition(y);
-		this._checkedSprite.pos = new Point(
-			380 + this.Offset.X + this.Parent.WidthOffset,
-			y + 138 + this.Offset.Y
-		);
+
+		this._checkedSprite.pos = new Point(380 + this.Offset.X + this.Parent.WidthOffset, y + 138 + this.Offset.Y);
 	}
 
 	public Draw() {
 		super.Draw();
-		this._checkedSprite.pos = this._checkedSprite.pos = new Point(
-			380 + this.Offset.X + this.Parent.WidthOffset,
-			this._checkedSprite.pos.Y
-		);
-		const isDefaultHightlitedForeColor =
-			this.HighlightedForeColor == UIMenuItem.DefaultHighlightedForeColor;
-		if (this.Selected && isDefaultHightlitedForeColor) {
+
+		this._checkedSprite.pos = this._checkedSprite.pos = new Point(380 + this.Offset.X + this.Parent.WidthOffset, this._checkedSprite.pos.Y);
+		const isDefaultHighlightedForeColor = this.HighlightedForeColor == UIMenuItem.DefaultHighlightedForeColor;
+		if (this.Selected && isDefaultHighlightedForeColor) {
 			this._checkedSprite.TextureName = this.Checked
 				? 'shop_box_tickb'
 				: 'shop_box_blankb';
@@ -49,7 +40,7 @@ export default class UIMenuCheckboxItem extends UIMenuItem {
 				: 'shop_box_blank';
 		}
 		this._checkedSprite.color = this.Enabled
-			? this.Selected && !isDefaultHightlitedForeColor
+			? this.Selected && !isDefaultHighlightedForeColor
 				? this.HighlightedForeColor
 				: this.ForeColor
 			: new Color(163, 159, 148);
@@ -62,5 +53,9 @@ export default class UIMenuCheckboxItem extends UIMenuItem {
 
 	public SetRightLabel(text: string) {
 		return this;
+	}
+
+	get Value() {
+		return this.Checked;
 	}
 }
