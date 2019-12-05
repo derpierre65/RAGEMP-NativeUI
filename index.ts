@@ -29,7 +29,7 @@ export default class NativeUI extends CustomVariables {
 
 	private title: string;
 	private subtitle: string;
-	private counterPretext: string = "";
+	private counterPretext: string = '';
 	private counterOverride: string = undefined;
 	private spriteLibrary: string;
 	private spriteName: string;
@@ -64,13 +64,13 @@ export default class NativeUI extends CustomVariables {
 
 	public recalculateDescriptionNextFrame: number = 1;
 
-	public AUDIO_LIBRARY: string = "HUD_FRONTEND_DEFAULT_SOUNDSET";
+	public AUDIO_LIBRARY: string = 'HUD_FRONTEND_DEFAULT_SOUNDSET';
 
-	public AUDIO_UPDOWN: string = "NAV_UP_DOWN";
-	public AUDIO_LEFTRIGHT: string = "NAV_LEFT_RIGHT";
-	public AUDIO_SELECT: string = "SELECT";
-	public AUDIO_BACK: string = "BACK";
-	public AUDIO_ERROR: string = "ERROR";
+	public AUDIO_UPDOWN: string = 'NAV_UP_DOWN';
+	public AUDIO_LEFTRIGHT: string = 'NAV_LEFT_RIGHT';
+	public AUDIO_SELECT: string = 'SELECT';
+	public AUDIO_BACK: string = 'BACK';
+	public AUDIO_ERROR: string = 'ERROR';
 
 	public MenuItems: (
 		| UIMenuItem
@@ -82,6 +82,7 @@ export default class NativeUI extends CustomVariables {
 	get TitleScale() {
 		return this._titleScale;
 	}
+
 	set TitleScale(scale: number) {
 		this._titleScale = scale;
 	}
@@ -89,55 +90,57 @@ export default class NativeUI extends CustomVariables {
 	get Visible() {
 		return this._visible;
 	}
+
 	set Visible(toggle: boolean) {
 		this._visible = toggle;
 		Common.PlaySound(this.AUDIO_BACK, this.AUDIO_LIBRARY);
 		/*if(!toggle) {
 			mp.events.callRemote('server:clientDebug', `Visible = false. _justOpenedFromPool: ${this._justOpenedFromPool}`);
 		}*/
-		if(toggle) {
+		if (toggle) {
 			this.UpdateDescriptionCaption();
 		}
-		if(this._justOpenedFromPool === true) {
+		if (this._justOpenedFromPool === true) {
 			this._justOpenedFromPool = false;
 			return;
 		}
-		if(toggle) {
+		if (toggle) {
 			this._justOpened = true;
 			this.MenuOpen.emit();
-			if(this.ParentMenu === null) {
-				if(!menuPool.includes(this) && this !== this._poolOpening) {
+			if (this.ParentMenu === null) {
+				if (!menuPool.includes(this) && this !== this._poolOpening) {
 					const previousMenu = (menuPool.length) ? menuPool[menuPool.length - 1] : null;
 					menuPool.push(this);
 					//mp.events.callRemote('server:clientDebug', 'Adding to menu pool ' + menuPool.length);
-					if(previousMenu !== this._poolOpening && previousMenu !== null) {
+					if (previousMenu !== this._poolOpening && previousMenu !== null) {
 						previousMenu._justClosedFromPool = true;
 						previousMenu.Visible = false;
 						//mp.events.callRemote('server:clientDebug', 'Closing current');
 					}
 				}
 			}
-		} else {
-			if(this._justClosedFromPool === true) {
+		}
+		else {
+			if (this._justClosedFromPool === true) {
 				this._justClosedFromPool = false;
 				return;
 			}
-			if(this.ParentMenu === null && menuPool.includes(this) && menuPool.length) {
-				if(menuPool[menuPool.length - 1] === this) {
+			if (this.ParentMenu === null && menuPool.includes(this) && menuPool.length) {
+				if (menuPool[menuPool.length - 1] === this) {
 					menuPool.pop();
 					this._justOpenedFromPool = true;
-					if(!menuPool.length) {
+					if (!menuPool.length) {
 						this._poolOpening = null;
 					}
 					//mp.events.callRemote('server:clientDebug', 'Removing from menu pool ' + menuPool.length);
 				}
-				if(menuPool.length) {
+				if (menuPool.length) {
 					this._poolOpening = menuPool[menuPool.length - 1];
 					menuPool[menuPool.length - 1].Visible = true;
 					//mp.events.callRemote('server:clientDebug', 'Pool opening next in line menu');
 				}
 			}
-			if(menuPool.length === 0) {
+			if (menuPool.length === 0) {
 				mp.game.invoke('0x8DB8CFFD58B62552'.toUpperCase(), 1);
 			}
 		}
@@ -146,13 +149,15 @@ export default class NativeUI extends CustomVariables {
 	get CurrentSelection() {
 		return this._activeItem % this.MenuItems.length;
 	}
+
 	set CurrentSelection(v) {
 		this.MenuItems[this._activeItem % this.MenuItems.length].Selected = false;
 		this._activeItem = 1000 - (1000 % this.MenuItems.length) + v;
 		if (this.CurrentSelection > this._maxItem) {
 			this._maxItem = this.CurrentSelection;
 			this._minItem = this.CurrentSelection - this.MaxItemsOnScreen;
-		} else if (this.CurrentSelection < this._minItem) {
+		}
+		else if (this.CurrentSelection < this._minItem) {
 			this._maxItem = this.MaxItemsOnScreen + this.CurrentSelection;
 			this._minItem = this.CurrentSelection;
 		}
@@ -193,12 +198,14 @@ export default class NativeUI extends CustomVariables {
 	constructor(title, subtitle, offset, spriteLibrary, spriteName) {
 		super();
 
-		if (!(offset instanceof Point)) offset = Point.Parse(offset);
+		if (!(offset instanceof Point)) {
+			offset = Point.Parse(offset);
+		}
 
 		this.title = title;
 		this.subtitle = subtitle;
-		this.spriteLibrary = spriteLibrary || "commonmenu";
-		this.spriteName = spriteName || "interaction_bgd";
+		this.spriteLibrary = spriteLibrary || 'commonmenu';
+		this.spriteName = spriteName || 'interaction_bgd';
 		this.offset = new Point(offset.X, offset.Y);
 		this.Children = new Map();
 
@@ -225,7 +232,7 @@ export default class NativeUI extends CustomVariables {
 			))
 		);
 
-		if (this.subtitle !== "") {
+		if (this.subtitle !== '') {
 			this._mainMenu.addItem(
 				new ResRectangle(
 					new Point(0 + this.offset.X, 107 + this.offset.Y),
@@ -243,11 +250,11 @@ export default class NativeUI extends CustomVariables {
 					Alignment.Left
 				))
 			);
-			if (this.subtitle.startsWith("~")) {
+			if (this.subtitle.startsWith('~')) {
 				this.counterPretext = this.subtitle.substr(0, 3);
 			}
 			this._counterText = new ResText(
-				"",
+				'',
 				new Point(425 + this.offset.X, 110 + this.offset.Y),
 				0.35,
 				new Color(255, 255, 255),
@@ -258,15 +265,15 @@ export default class NativeUI extends CustomVariables {
 		}
 
 		this._upAndDownSprite = new Sprite(
-			"commonmenu",
-			"shop_arrows_upanddown",
+			'commonmenu',
+			'shop_arrows_upanddown',
 			new Point(
 				190 + this.offset.X,
 				147 +
-					37 * (this.MaxItemsOnScreen + 1) +
-					this.offset.Y -
-					37 +
-					this.extraOffset
+				37 * (this.MaxItemsOnScreen + 1) +
+				this.offset.Y -
+				37 +
+				this.extraOffset
 			),
 			new Size(50, 50)
 		);
@@ -275,10 +282,10 @@ export default class NativeUI extends CustomVariables {
 			new Point(
 				0 + this.offset.X,
 				144 +
-					38 * (this.MaxItemsOnScreen + 1) +
-					this.offset.Y -
-					37 +
-					this.extraOffset
+				38 * (this.MaxItemsOnScreen + 1) +
+				this.offset.Y -
+				37 +
+				this.extraOffset
 			),
 			new Size(431, 18),
 			new Color(0, 0, 0, 200)
@@ -288,11 +295,11 @@ export default class NativeUI extends CustomVariables {
 			new Point(
 				0 + this.offset.X,
 				144 +
-					18 +
-					38 * (this.MaxItemsOnScreen + 1) +
-					this.offset.Y -
-					37 +
-					this.extraOffset
+				18 +
+				38 * (this.MaxItemsOnScreen + 1) +
+				this.offset.Y -
+				37 +
+				this.extraOffset
 			),
 			new Size(431, 18),
 			new Color(0, 0, 0, 200)
@@ -304,13 +311,13 @@ export default class NativeUI extends CustomVariables {
 			Color.Black
 		);
 		this._descriptionRectangle = new Sprite(
-			"commonmenu",
-			"gradient_bgd",
+			'commonmenu',
+			'gradient_bgd',
 			new Point(this.offset.X, 127),
 			new Size(431, 30)
 		);
 		this._descriptionText = new ResText(
-			"",
+			'',
 			new Point(this.offset.X + 5, 125),
 			0.35,
 			new Color(255, 255, 255, 255),
@@ -319,14 +326,14 @@ export default class NativeUI extends CustomVariables {
 		);
 
 		this._background = new Sprite(
-			"commonmenu",
-			"gradient_bgd",
+			'commonmenu',
+			'gradient_bgd',
 			new Point(this.offset.X, 144 + this.offset.Y - 37 + this.extraOffset),
 			new Size(290, 25)
 		);
 		this._visible = false;
 
-		mp.events.add("render", this.render.bind(this));
+		mp.events.add('render', this.render.bind(this));
 		console.log(`Created Native UI! ${this.title}`);
 	}
 
@@ -407,10 +414,11 @@ export default class NativeUI extends CustomVariables {
 
 	public RemoveItem(item: UIMenuItem) {
 		for (let i = 0; i < this.MenuItems.length; i++) {
-			if(this.MenuItems[i] === item) {
+			if (this.MenuItems[i] === item) {
 				this.MenuItems.splice(i, 1);
 			}
 		}
+
 		this.RefreshIndex();
 		this.UpdateDescriptionCaption();
 	}
@@ -446,8 +454,9 @@ export default class NativeUI extends CustomVariables {
 			return;
 		}
 
-		for (let i = 0; i < this.MenuItems.length; i++)
+		for (let i = 0; i < this.MenuItems.length; i++) {
 			this.MenuItems[i].Selected = false;
+		}
 
 		this._activeItem = 1000 - (1000 % this.MenuItems.length);
 		this._maxItem = this.MaxItemsOnScreen;
@@ -465,7 +474,7 @@ export default class NativeUI extends CustomVariables {
 	}
 
 	public Close(closeChildren: boolean = false) {
-		if(closeChildren) {
+		if (closeChildren) {
 			this.Children.forEach((m) => {
 				m.Close();
 			});
@@ -481,70 +490,70 @@ export default class NativeUI extends CustomVariables {
 		this._subtitle.caption = text;
 	}
 
-	public GoLeft() {
+	/**
+	 * @param type (-1 left, 1 right)
+	 * @constructor
+	 */
+	public Go(type = 0) {
 		if (
+			type !== 1 && type !== -1 ||
 			!(this.MenuItems[this.CurrentSelection] instanceof UIMenuListItem) &&
 			!(this.MenuItems[this.CurrentSelection] instanceof UIMenuDynamicListItem) &&
 			!(this.MenuItems[this.CurrentSelection] instanceof UIMenuSliderItem) ||
 			!this.MenuItems[this.CurrentSelection].Enabled
-		)
+		) {
 			return;
+		}
+
 		if (this.MenuItems[this.CurrentSelection] instanceof UIMenuListItem) {
 			const it = <UIMenuListItem>this.MenuItems[this.CurrentSelection];
-			if (it.Collection.length == 0) return;
-			it.Index--;
+			if (it.Collection.length == 0) {
+				return;
+			}
+			it.Index += type;
 			Common.PlaySound(this.AUDIO_LEFTRIGHT, this.AUDIO_LIBRARY);
 			this.ListChange.emit(it, it.Index);
 		}
 		else if (this.MenuItems[this.CurrentSelection] instanceof UIMenuDynamicListItem) {
 			const it = <UIMenuDynamicListItem>this.MenuItems[this.CurrentSelection];
-			if (it.SelectedValue <= it.LowerThreshold) {
-				it.SelectedValue = it.UpperThreshold;
-			} else {
-				it.SelectedValue -= it.LeftMoveThreshold;
+			let selectedValue = it.SelectedValue;
+			if (type === -1) {
+				if (selectedValue <= it.LowerThreshold) {
+					selectedValue = it.UpperThreshold;
+				}
+				else {
+					selectedValue -= it.LeftMoveThreshold;
+				}
 			}
+			else {
+				if (selectedValue >= it.UpperThreshold) {
+					selectedValue = it.LowerThreshold;
+				}
+				else {
+					selectedValue += it.RightMoveThreshold;
+				}
+			}
+
+			it.SelectedValue = selectedValue;
 			Common.PlaySound(this.AUDIO_LEFTRIGHT, this.AUDIO_LIBRARY);
 			this.DynamicListChange.emit(it, it.SelectedValue);
 		}
 		else if (this.MenuItems[this.CurrentSelection] instanceof UIMenuSliderItem) {
 			const it = <UIMenuSliderItem>this.MenuItems[this.CurrentSelection];
-			it.Index = it.Index - 1;
+			it.Index += type;
 			Common.PlaySound(this.AUDIO_LEFTRIGHT, this.AUDIO_LIBRARY);
 			this.SliderChange.emit(it, it.Index, it.IndexToItem(it.Index));
 		}
 	}
 
+	/** @deprecated use Go(-1) */
+	public GoLeft() {
+		return this.Go(-1);
+	}
+
+	/** @deprecated use Go(1) */
 	public GoRight() {
-		if (
-			!(this.MenuItems[this.CurrentSelection] instanceof UIMenuListItem) &&
-			!(this.MenuItems[this.CurrentSelection] instanceof UIMenuDynamicListItem) &&
-			!(this.MenuItems[this.CurrentSelection] instanceof UIMenuSliderItem) ||
-			!this.MenuItems[this.CurrentSelection].Enabled
-		)
-			return;
-		if (this.MenuItems[this.CurrentSelection] instanceof UIMenuListItem) {
-			const it = <UIMenuListItem>this.MenuItems[this.CurrentSelection];
-			if (it.Collection.length == 0) return;
-			it.Index++;
-			Common.PlaySound(this.AUDIO_LEFTRIGHT, this.AUDIO_LIBRARY);
-			this.ListChange.emit(it, it.Index);
-		}
-		else if (this.MenuItems[this.CurrentSelection] instanceof UIMenuDynamicListItem) {
-			const it = <UIMenuDynamicListItem>this.MenuItems[this.CurrentSelection];
-			if (it.SelectedValue >= it.UpperThreshold) {
-				it.SelectedValue = it.LowerThreshold;
-			} else {
-				it.SelectedValue += it.RightMoveThreshold;
-			}
-			Common.PlaySound(this.AUDIO_LEFTRIGHT, this.AUDIO_LIBRARY);
-			this.DynamicListChange.emit(it, it.SelectedValue);
-		}
-		else if (this.MenuItems[this.CurrentSelection] instanceof UIMenuSliderItem) {
-			const it = <UIMenuSliderItem>this.MenuItems[this.CurrentSelection];
-			it.Index++;
-			Common.PlaySound(this.AUDIO_LEFTRIGHT, this.AUDIO_LIBRARY);
-			this.SliderChange.emit(it, it.Index, it.IndexToItem(it.Index));
-		}
+		return this.Go(1);
 	}
 
 	public SelectItem() {
@@ -552,12 +561,14 @@ export default class NativeUI extends CustomVariables {
 			Common.PlaySound(this.AUDIO_ERROR, this.AUDIO_LIBRARY);
 			return;
 		}
+
 		const it = <UIMenuCheckboxItem>this.MenuItems[this.CurrentSelection];
 		if (this.MenuItems[this.CurrentSelection] instanceof UIMenuCheckboxItem) {
 			it.Checked = !it.Checked;
 			Common.PlaySound(this.AUDIO_SELECT, this.AUDIO_LIBRARY);
 			this.CheckboxChange.emit(it, it.Checked);
-		} else {
+		}
+		else {
 			let hasChildren = this.Children.has(it.Id);
 
 			Common.PlaySound(this.AUDIO_SELECT, this.AUDIO_LIBRARY);
@@ -573,6 +584,7 @@ export default class NativeUI extends CustomVariables {
 				this.MenuChange.emit(subMenu, true);
 			}
 		}
+		it.OnSelect.emit(it);
 		it.fireEvent();
 	}
 
@@ -581,7 +593,7 @@ export default class NativeUI extends CustomVariables {
 		topLeft,
 		safezone // TODO: Ability to scroll left and right
 	) {
-		mp.game.invoke("0x54ce8ac98e120cab".toUpperCase(), "jamyfafi");
+		mp.game.invoke('0x54ce8ac98e120cab'.toUpperCase(), 'jamyfafi');
 		mp.game.ui.addTextComponentSubstringPlayerName(item.Text);
 		let res = Screen.ResolutionMaintainRatio();
 		let screenw = res.Width;
@@ -590,18 +602,18 @@ export default class NativeUI extends CustomVariables {
 		const ratio = screenw / screenh;
 		let width = height * ratio;
 		const labelSize =
-			mp.game.invoke("0x85f061da64ed2f67".toUpperCase(), 0) * width * 0.35;
+			mp.game.invoke('0x85f061da64ed2f67'.toUpperCase(), 0) * width * 0.35;
 
 		const labelSizeX = 5 + labelSize + 10;
 		const arrowSizeX = 431 - labelSizeX;
 		return Screen.IsMouseInBounds(topLeft, new Size(labelSizeX, 38))
 			? 1
 			: Screen.IsMouseInBounds(
-					new Point(topLeft.X + labelSizeX, topLeft.Y),
-					new Size(arrowSizeX, 38)
-			  )
-			? 2
-			: 0;
+				new Point(topLeft.X + labelSizeX, topLeft.Y),
+				new Size(arrowSizeX, 38)
+			)
+				? 2
+				: 0;
 	}
 
 	public ProcessMouse() {
@@ -615,32 +627,24 @@ export default class NativeUI extends CustomVariables {
 			return;
 		}
 
-		if (!mp.gui.cursor.visible) mp.gui.cursor.visible = true;
+		if (!mp.gui.cursor.visible) {
+			mp.gui.cursor.visible = true;
+		}
 		let limit = this.MenuItems.length - 1;
 		let counter = 0;
-		if (this.MenuItems.length > this.MaxItemsOnScreen + 1)
+		if (this.MenuItems.length > this.MaxItemsOnScreen + 1) {
 			limit = this._maxItem;
+		}
 
-		if (
-			Screen.IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) &&
-			this.MouseEdgeEnabled
-		) {
-			mp.game.cam.setGameplayCamRelativeHeading(
-				mp.game.cam.getGameplayCamRelativeHeading() + 5.0
-			);
+		if (Screen.IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && this.MouseEdgeEnabled) {
+			mp.game.cam.setGameplayCamRelativeHeading(mp.game.cam.getGameplayCamRelativeHeading() + 5.0);
 			mp.game.ui.setCursorSprite(6);
-		} else if (
-			Screen.IsMouseInBounds(
-				new Point(Screen.ResolutionMaintainRatio().Width - 30.0, 0),
-				new Size(30, 1080)
-			) &&
-			this.MouseEdgeEnabled
-		) {
-			mp.game.cam.setGameplayCamRelativeHeading(
-				mp.game.cam.getGameplayCamRelativeHeading() - 5.0
-			);
+		}
+		else if (Screen.IsMouseInBounds(new Point(Screen.ResolutionMaintainRatio().Width - 30.0, 0), new Size(30, 1080)) && this.MouseEdgeEnabled) {
+			mp.game.cam.setGameplayCamRelativeHeading(mp.game.cam.getGameplayCamRelativeHeading() - 5.0);
 			mp.game.ui.setCursorSprite(7);
-		} else if (this.MouseEdgeEnabled) {
+		}
+		else if (this.MouseEdgeEnabled) {
 			mp.game.ui.setCursorSprite(1);
 		}
 
@@ -661,10 +665,7 @@ export default class NativeUI extends CustomVariables {
 				if (uiMenuItem.Hovered && res == 1 && (this.MenuItems[i] instanceof UIMenuListItem || this.MenuItems[i] instanceof UIMenuDynamicListItem)) {
 					mp.game.invoke('0x8DB8CFFD58B62552'.toUpperCase(), 5);
 				}
-				if (
-					mp.game.controls.isControlJustPressed(0, 24) ||
-					mp.game.controls.isDisabledControlJustPressed(0, 24)
-				)
+				if (mp.game.controls.isControlJustPressed(0, 24) || mp.game.controls.isDisabledControlJustPressed(0, 24)) {
 					if (uiMenuItem.Selected && uiMenuItem.Enabled) {
 						if (
 							(this.MenuItems[i] instanceof UIMenuListItem || this.MenuItems[i] instanceof UIMenuDynamicListItem) &&
@@ -695,17 +696,26 @@ export default class NativeUI extends CustomVariables {
 									}
 									break;
 							}
-						} else this.SelectItem();
-					} else if (!uiMenuItem.Selected) {
+						}
+						else {
+							this.SelectItem();
+						}
+					}
+					else if (!uiMenuItem.Selected) {
 						this.CurrentSelection = i;
 						Common.PlaySound(this.AUDIO_UPDOWN, this.AUDIO_LIBRARY);
 						this.IndexChange.emit(this.CurrentSelection, this.MenuItems[this._activeItem % this.MenuItems.length]);
 						this.SelectItem();
 						this.UpdateDescriptionCaption();
-					} else if (!uiMenuItem.Enabled && uiMenuItem.Selected) {
+					}
+					else if (!uiMenuItem.Enabled && uiMenuItem.Selected) {
 						Common.PlaySound(this.AUDIO_ERROR, this.AUDIO_LIBRARY);
 					}
-			} else uiMenuItem.Hovered = false;
+				}
+			}
+			else {
+				uiMenuItem.Hovered = false;
+			}
 			counter++;
 		}
 		const extraY =
@@ -716,7 +726,9 @@ export default class NativeUI extends CustomVariables {
 			this.extraOffset +
 			this.safezoneOffset.Y;
 		const extraX = this.safezoneOffset.X + this.offset.X;
-		if (this.MenuItems.length <= this.MaxItemsOnScreen + 1) return;
+		if (this.MenuItems.length <= this.MaxItemsOnScreen + 1) {
+			return;
+		}
 		if (
 			Screen.IsMouseInBounds(
 				new Point(extraX, extraY),
@@ -728,11 +740,17 @@ export default class NativeUI extends CustomVariables {
 				mp.game.controls.isControlJustPressed(0, 24) ||
 				mp.game.controls.isDisabledControlJustPressed(0, 24)
 			) {
-				if (this.MenuItems.length > this.MaxItemsOnScreen + 1)
+				if (this.MenuItems.length > this.MaxItemsOnScreen + 1) {
 					this.GoUpOverflow();
-				else this.GoUp();
+				}
+				else {
+					this.GoUp();
+				}
 			}
-		} else this._extraRectangleUp.color = new Color(0, 0, 0, 200);
+		}
+		else {
+			this._extraRectangleUp.color = new Color(0, 0, 0, 200);
+		}
 
 		if (
 			Screen.IsMouseInBounds(
@@ -745,15 +763,23 @@ export default class NativeUI extends CustomVariables {
 				mp.game.controls.isControlJustPressed(0, 24) ||
 				mp.game.controls.isDisabledControlJustPressed(0, 24)
 			) {
-				if (this.MenuItems.length > this.MaxItemsOnScreen + 1)
+				if (this.MenuItems.length > this.MaxItemsOnScreen + 1) {
 					this.GoDownOverflow();
-				else this.GoDown();
+				}
+				else {
+					this.GoDown();
+				}
 			}
-		} else this._extraRectangleDown.color = new Color(0, 0, 0, 200);
+		}
+		else {
+			this._extraRectangleDown.color = new Color(0, 0, 0, 200);
+		}
 	}
 
 	public ProcessControl() {
-		if (!this.Visible) return;
+		if (!this.Visible) {
+			return;
+		}
 		if (this._justOpened) {
 			this._justOpened = false;
 			return;
@@ -763,7 +789,9 @@ export default class NativeUI extends CustomVariables {
 			// Back
 			this.GoBack();
 		}
-		if (this.MenuItems.length == 0) return;
+		if (this.MenuItems.length == 0) {
+			return;
+		}
 		if (
 			mp.game.controls.isControlPressed(0, 172) &&
 			this.lastUpDownNavigation + 120 < Date.now()
@@ -771,73 +799,91 @@ export default class NativeUI extends CustomVariables {
 			// isControlJustPressed
 			// Up
 			this.lastUpDownNavigation = Date.now();
-			if (this.MenuItems.length > this.MaxItemsOnScreen + 1)
+			if (this.MenuItems.length > this.MaxItemsOnScreen + 1) {
 				this.GoUpOverflow();
-			else this.GoUp();
-		} else if (mp.game.controls.isControlJustReleased(0, 172)) {
+			}
+			else {
+				this.GoUp();
+			}
+		}
+		else if (mp.game.controls.isControlJustReleased(0, 172)) {
 			this.lastUpDownNavigation = 0;
-		} else if (
+		}
+		else if (
 			mp.game.controls.isControlPressed(0, 173) &&
 			this.lastUpDownNavigation + 120 < Date.now()
 		) {
 			// isControlJustPressed
 			// Down
 			this.lastUpDownNavigation = Date.now();
-			if (this.MenuItems.length > this.MaxItemsOnScreen + 1)
+			if (this.MenuItems.length > this.MaxItemsOnScreen + 1) {
 				this.GoDownOverflow();
-			else this.GoDown();
-		} else if (mp.game.controls.isControlJustReleased(0, 173)) {
+			}
+			else {
+				this.GoDown();
+			}
+		}
+		else if (mp.game.controls.isControlJustReleased(0, 173)) {
 			this.lastUpDownNavigation = 0;
-		} else if (
+		}
+		else if (
 			mp.game.controls.isControlPressed(0, 174) &&
 			this.lastLeftRightNavigation + 100 < Date.now()
 		) {
 			// Left
 			this.lastLeftRightNavigation = Date.now();
-			this.GoLeft();
-		} else if (mp.game.controls.isControlJustReleased(0, 174)) {
+			this.Go(-1);
+		}
+		else if (mp.game.controls.isControlJustReleased(0, 174)) {
 			this.lastLeftRightNavigation = 0;
-		} else if (
+		}
+		else if (
 			mp.game.controls.isControlPressed(0, 175) &&
 			this.lastLeftRightNavigation + 100 < Date.now()
 		) {
 			// Right
 			this.lastLeftRightNavigation = Date.now();
-			this.GoRight();
-		} else if (mp.game.controls.isControlJustReleased(0, 175)) {
+			this.Go(1);
+		}
+		else if (mp.game.controls.isControlJustReleased(0, 175)) {
 			this.lastLeftRightNavigation = 0;
-		} else if (mp.game.controls.isControlJustPressed(0, 201)) {
+		}
+		else if (mp.game.controls.isControlJustPressed(0, 201)) {
 			// Select
 			this.SelectItem();
 		}
 	}
 
 	public GoUpOverflow() {
-		if (this.MenuItems.length <= this.MaxItemsOnScreen + 1) return;
+		if (this.MenuItems.length <= this.MaxItemsOnScreen + 1) {
+			return;
+		}
 		if (this._activeItem % this.MenuItems.length <= this._minItem) {
 			if (this._activeItem % this.MenuItems.length == 0) {
 				this._minItem = this.MenuItems.length - this.MaxItemsOnScreen - 1;
 				this._maxItem = this.MenuItems.length - 1;
 				this.MenuItems[
-					this._activeItem % this.MenuItems.length
-				].Selected = false;
+				this._activeItem % this.MenuItems.length
+					].Selected = false;
 				this._activeItem = 1000 - (1000 % this.MenuItems.length);
 				this._activeItem += this.MenuItems.length - 1;
 				this.MenuItems[
-					this._activeItem % this.MenuItems.length
-				].Selected = true;
-			} else {
+				this._activeItem % this.MenuItems.length
+					].Selected = true;
+			}
+			else {
 				this._minItem--;
 				this._maxItem--;
 				this.MenuItems[
-					this._activeItem % this.MenuItems.length
-				].Selected = false;
+				this._activeItem % this.MenuItems.length
+					].Selected = false;
 				this._activeItem--;
 				this.MenuItems[
-					this._activeItem % this.MenuItems.length
-				].Selected = true;
+				this._activeItem % this.MenuItems.length
+					].Selected = true;
 			}
-		} else {
+		}
+		else {
 			this.MenuItems[this._activeItem % this.MenuItems.length].Selected = false;
 			this._activeItem--;
 			this.MenuItems[this._activeItem % this.MenuItems.length].Selected = true;
@@ -848,7 +894,9 @@ export default class NativeUI extends CustomVariables {
 	}
 
 	public GoUp() {
-		if (this.MenuItems.length > this.MaxItemsOnScreen + 1) return;
+		if (this.MenuItems.length > this.MaxItemsOnScreen + 1) {
+			return;
+		}
 		this.MenuItems[this._activeItem % this.MenuItems.length].Selected = false;
 		this._activeItem--;
 		this.MenuItems[this._activeItem % this.MenuItems.length].Selected = true;
@@ -858,7 +906,9 @@ export default class NativeUI extends CustomVariables {
 	}
 
 	public GoDownOverflow() {
-		if (this.MenuItems.length <= this.MaxItemsOnScreen + 1) return;
+		if (this.MenuItems.length <= this.MaxItemsOnScreen + 1) {
+			return;
+		}
 		if (this._activeItem % this.MenuItems.length >= this._maxItem) {
 			if (
 				this._activeItem % this.MenuItems.length ==
@@ -867,24 +917,26 @@ export default class NativeUI extends CustomVariables {
 				this._minItem = 0;
 				this._maxItem = this.MaxItemsOnScreen;
 				this.MenuItems[
-					this._activeItem % this.MenuItems.length
-				].Selected = false;
+				this._activeItem % this.MenuItems.length
+					].Selected = false;
 				this._activeItem = 1000 - (1000 % this.MenuItems.length);
 				this.MenuItems[
-					this._activeItem % this.MenuItems.length
-				].Selected = true;
-			} else {
+				this._activeItem % this.MenuItems.length
+					].Selected = true;
+			}
+			else {
 				this._minItem++;
 				this._maxItem++;
 				this.MenuItems[
-					this._activeItem % this.MenuItems.length
-				].Selected = false;
+				this._activeItem % this.MenuItems.length
+					].Selected = false;
 				this._activeItem++;
 				this.MenuItems[
-					this._activeItem % this.MenuItems.length
-				].Selected = true;
+				this._activeItem % this.MenuItems.length
+					].Selected = true;
 			}
-		} else {
+		}
+		else {
 			this.MenuItems[this._activeItem % this.MenuItems.length].Selected = false;
 			this._activeItem++;
 			this.MenuItems[this._activeItem % this.MenuItems.length].Selected = true;
@@ -895,7 +947,9 @@ export default class NativeUI extends CustomVariables {
 	}
 
 	public GoDown() {
-		if (this.MenuItems.length > this.MaxItemsOnScreen + 1) return;
+		if (this.MenuItems.length > this.MaxItemsOnScreen + 1) {
+			return;
+		}
 		this.MenuItems[this._activeItem % this.MenuItems.length].Selected = false;
 		this._activeItem++;
 		this.MenuItems[this._activeItem % this.MenuItems.length].Selected = true;
@@ -927,7 +981,7 @@ export default class NativeUI extends CustomVariables {
 	}
 
 	public BindMenuToItem(menuToBind: NativeUI, itemToBindTo: UIMenuItem) {
-		if(!this.MenuItems.includes(itemToBindTo)) {
+		if (!this.MenuItems.includes(itemToBindTo)) {
 			this.AddItem(itemToBindTo);
 		}
 
@@ -937,7 +991,9 @@ export default class NativeUI extends CustomVariables {
 	}
 
 	public ReleaseMenuFromItem(releaseFrom: UIMenuItem) {
-		if (!this.Children.has(releaseFrom.Id)) return false;
+		if (!this.Children.has(releaseFrom.Id)) {
+			return false;
+		}
 
 		const menu: NativeUI = this.Children.get(releaseFrom.Id);
 		menu.ParentItem = null;
@@ -956,25 +1012,27 @@ export default class NativeUI extends CustomVariables {
 	}
 
 	public CalculateDescription() {
-		if(this.recalculateDescriptionNextFrame > 0) {
+		if (this.recalculateDescriptionNextFrame > 0) {
 			this.recalculateDescriptionNextFrame--;
 		}
 		this.RecalculateDescriptionPosition();
-		if (this.MenuItems.length > 0 && this._descriptionText.caption && this.MenuItems[this._activeItem % this.MenuItems.length].Description.trim() !== "") {
+		if (this.MenuItems.length > 0 && this._descriptionText.caption && this.MenuItems[this._activeItem % this.MenuItems.length].Description.trim() !== '') {
 			const numLines = Screen.GetLineCount(this._descriptionText.caption, this._descriptionText.pos, this._descriptionText.font, this._descriptionText.scale, this._descriptionText.Wrap);
 
 			this._descriptionRectangle.size = new Size(
 				431 + this.WidthOffset,
 				(numLines * 25) + 15
 			);
-			if(numLines === 0) {
+			if (numLines === 0) {
 				this.recalculateDescriptionNextFrame++;
 			}
 		}
 	}
 
 	private render() {
-		if (!this.Visible) return;
+		if (!this.Visible) {
+			return;
+		}
 
 		let bindPosition = this._bindToPosition;
 		if (bindPosition) {
@@ -991,16 +1049,21 @@ export default class NativeUI extends CustomVariables {
 		}
 
 		if (this._justOpened) {
-			if (this._logo != null && !this._logo.IsTextureDictionaryLoaded)
+			if (this._logo != null && !this._logo.IsTextureDictionaryLoaded) {
 				this._logo.LoadTextureDictionary();
-			if (!this._background.IsTextureDictionaryLoaded)
+			}
+			if (!this._background.IsTextureDictionaryLoaded) {
 				this._background.LoadTextureDictionary();
-			if (!this._descriptionRectangle.IsTextureDictionaryLoaded)
+			}
+			if (!this._descriptionRectangle.IsTextureDictionaryLoaded) {
 				this._descriptionRectangle.LoadTextureDictionary();
-			if (!this._upAndDownSprite.IsTextureDictionaryLoaded)
+			}
+			if (!this._upAndDownSprite.IsTextureDictionaryLoaded) {
 				this._upAndDownSprite.LoadTextureDictionary();
-			if(!this.recalculateDescriptionNextFrame)
+			}
+			if (!this.recalculateDescriptionNextFrame) {
 				this.recalculateDescriptionNextFrame++;
+			}
 		}
 		this._mainMenu.Draw();
 
@@ -1019,7 +1082,7 @@ export default class NativeUI extends CustomVariables {
 
 		if (this.MenuItems.length > 0) {
 			this.MenuItems[this._activeItem % this.MenuItems.length].Selected = true;
-			if (this.MenuItems[this._activeItem % this.MenuItems.length].Description.trim() !== "") {
+			if (this.MenuItems[this._activeItem % this.MenuItems.length].Description.trim() !== '') {
 				this._descriptionBar.Draw();
 				this._descriptionRectangle.Draw();
 				this._descriptionText.Draw();
@@ -1037,7 +1100,8 @@ export default class NativeUI extends CustomVariables {
 				this._counterText.caption = this.counterPretext + this.counterOverride;
 				this._counterText.Draw();
 			}
-		} else {
+		}
+		else {
 			for (let index = this._minItem; index <= this._maxItem; index++) {
 				let item = this.MenuItems[index];
 				item.SetVerticalPosition(count * 38 - 37 + this.extraOffset);
@@ -1049,10 +1113,10 @@ export default class NativeUI extends CustomVariables {
 			this._upAndDownSprite.pos = new Point(
 				190 + this.offset.X + this.WidthOffset / 2,
 				147 +
-					37 * (this.MaxItemsOnScreen + 1) +
-					this.offset.Y -
-					37 +
-					this.extraOffset
+				37 * (this.MaxItemsOnScreen + 1) +
+				this.offset.Y -
+				37 +
+				this.extraOffset
 			);
 
 			this._extraRectangleUp.Draw();
@@ -1060,9 +1124,10 @@ export default class NativeUI extends CustomVariables {
 			this._upAndDownSprite.Draw();
 			if (this._counterText) {
 				if (!this.counterOverride) {
-					const cap = this.CurrentSelection + 1 + " / " + this.MenuItems.length;
+					const cap = this.CurrentSelection + 1 + ' / ' + this.MenuItems.length;
 					this._counterText.caption = this.counterPretext + cap;
-				} else {
+				}
+				else {
 					this._counterText.caption =
 						this.counterPretext + this.counterOverride;
 				}

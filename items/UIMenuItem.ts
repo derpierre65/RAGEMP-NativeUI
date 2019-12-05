@@ -1,24 +1,24 @@
-import BadgeStyle from "../enums/BadgeStyle";
-import Font from "../enums/Font";
-import NativeUI from "../index";
-import ResRectangle from "../modules/ResRectangle";
-import ResText, { Alignment } from "../modules/ResText";
-import Sprite from "../modules/Sprite";
-import Color from "../utils/Color";
-import Point from "../utils/Point";
-import Size from "../utils/Size";
-import { Screen } from "../utils/Screen";
-import UUIDV4 from "../utils/UUIDV4";
+import BadgeStyle from '../enums/BadgeStyle';
+import Font from '../enums/Font';
+import NativeUI from '../index';
+import ResRectangle from '../modules/ResRectangle';
+import ResText, {Alignment} from '../modules/ResText';
+import Sprite from '../modules/Sprite';
+import Color from '../utils/Color';
+import Point from '../utils/Point';
+import Size from '../utils/Size';
+import UUIDV4 from '../utils/UUIDV4';
 import CustomVariables from '../utils/CustomVariables';
+import LiteEvent from '../utils/LiteEvent';
 
 export default class UIMenuItem extends CustomVariables {
-	public readonly Id: string = UUIDV4();
-
 	public static readonly DefaultBackColor: Color = Color.Empty;
 	public static readonly DefaultHighlightedBackColor: Color = Color.White;
 	public static readonly DefaultForeColor: Color = Color.WhiteSmoke;
 	public static readonly DefaultHighlightedForeColor: Color = Color.Black;
 
+	public readonly Id: string = UUIDV4();
+	public Name: string = 'unknown';
 	private _event: { event: string; args: any[] };
 
 	protected _rectangle: ResRectangle;
@@ -45,75 +45,25 @@ export default class UIMenuItem extends CustomVariables {
 	public Offset: Point;
 	public Parent: NativeUI;
 
-	get Text() {
-		return this._text.caption;
-	}
-	set Text(text) {
-		this._text.caption = text;
-	}
+	public RightLabel: string = '';
 
-	get Description() {
-		return this._description;
-	}
-	set Description(text) {
-		this._description = text;
-		if(this.hasOwnProperty('Parent')) {
-			this.Parent.recalculateDescriptionNextFrame += 1;
-		}
-	}
-
-	public RightLabel: string = "";
 	public LeftBadge: BadgeStyle = BadgeStyle.None;
 	public RightBadge: BadgeStyle = BadgeStyle.None;
 
-	constructor(text, description = "", data = null) {
+	public readonly OnSelect = new LiteEvent();
+
+	constructor(text, description = '', data = null) {
 		super();
 
 		this.Enabled = true;
 		this.Data = data;
-
-		this._rectangle = new ResRectangle(
-			new Point(0, 0),
-			new Size(431, 38),
-			new Color(150, 0, 0, 0)
-		);
-		this._text = new ResText(
-			text,
-			new Point(8, 0),
-			0.33,
-			Color.WhiteSmoke,
-			Font.ChaletLondon,
-			Alignment.Left
-		);
 		this.Description = description;
-		this._selectedSprite = new Sprite(
-			"commonmenu",
-			"gradient_nav",
-			new Point(0, 0),
-			new Size(431, 38)
-		);
-
-		this._badgeLeft = new Sprite(
-			"commonmenu",
-			"",
-			new Point(0, 0),
-			new Size(40, 40)
-		);
-		this._badgeRight = new Sprite(
-			"commonmenu",
-			"",
-			new Point(0, 0),
-			new Size(40, 40)
-		);
-
-		this._labelText = new ResText(
-			"",
-			new Point(0, 0),
-			0.35,
-			Color.White,
-			0,
-			Alignment.Right
-		);
+		this._rectangle = new ResRectangle(new Point(0, 0), new Size(431, 38), new Color(150, 0, 0, 0));
+		this._text = new ResText(text, new Point(8, 0), 0.33, Color.WhiteSmoke, Font.ChaletLondon, Alignment.Left);
+		this._selectedSprite = new Sprite('commonmenu', 'gradient_nav', new Point(0, 0), new Size(431, 38));
+		this._badgeLeft = new Sprite('commonmenu', '', new Point(0, 0), new Size(40, 40));
+		this._badgeRight = new Sprite('commonmenu', '', new Point(0, 0), new Size(40, 40));
+		this._labelText = new ResText('', new Point(0, 0), 0.35, Color.White, 0, Alignment.Right);
 	}
 
 	public SetVerticalPosition(y: number) {
@@ -146,7 +96,7 @@ export default class UIMenuItem extends CustomVariables {
 		}
 	}
 
-	Draw() {
+	public Draw() {
 		this._rectangle.size = new Size(431 + this.Parent.WidthOffset, 38);
 		this._selectedSprite.size = new Size(431 + this.Parent.WidthOffset, 38);
 
@@ -173,7 +123,7 @@ export default class UIMenuItem extends CustomVariables {
 				this.LeftBadge,
 				this.Selected
 			);
-			this._badgeLeft.color = this.IsBagdeWhiteSprite(this.LeftBadge)
+			this._badgeLeft.color = this.IsBadgeWhiteSprite(this.LeftBadge)
 				? this.Enabled
 					? this.Selected
 						? this.HighlightedForeColor
@@ -181,7 +131,8 @@ export default class UIMenuItem extends CustomVariables {
 					: new Color(163, 159, 148)
 				: Color.White;
 			this._badgeLeft.Draw();
-		} else {
+		}
+		else {
 			this._text.pos = new Point(8 + this.Offset.X, this._text.pos.Y);
 		}
 
@@ -195,7 +146,7 @@ export default class UIMenuItem extends CustomVariables {
 				this.RightBadge,
 				this.Selected
 			);
-			this._badgeRight.color = this.IsBagdeWhiteSprite(this.RightBadge)
+			this._badgeRight.color = this.IsBadgeWhiteSprite(this.RightBadge)
 				? this.Enabled
 					? this.Selected
 						? this.HighlightedForeColor
@@ -205,7 +156,7 @@ export default class UIMenuItem extends CustomVariables {
 			this._badgeRight.Draw();
 		}
 
-		if (this.RightLabel && this.RightLabel !== "") {
+		if (this.RightLabel && this.RightLabel !== '') {
 			this._labelText.pos = new Point(
 				420 + this.Offset.X + this.Parent.WidthOffset,
 				this._labelText.pos.Y
@@ -234,90 +185,90 @@ export default class UIMenuItem extends CustomVariables {
 	}
 
 	BadgeToSpriteLib(badge: BadgeStyle) {
-		switch(badge) {
+		switch (badge) {
 			case BadgeStyle.Sale:
-				return "mpshopsale";
+				return 'mpshopsale';
 			case BadgeStyle.Audio1:
 			case BadgeStyle.Audio2:
 			case BadgeStyle.Audio3:
 			case BadgeStyle.AudioInactive:
 			case BadgeStyle.AudioMute:
-				return "mpleaderboard";
+				return 'mpleaderboard';
 			default:
-				return "commonmenu";
+				return 'commonmenu';
 		}
 	}
 
 	BadgeToSpriteName(badge: BadgeStyle, selected: boolean) {
 		switch (badge) {
 			case BadgeStyle.None:
-				return "";
+				return '';
 			case BadgeStyle.BronzeMedal:
-				return "mp_medal_bronze";
+				return 'mp_medal_bronze';
 			case BadgeStyle.GoldMedal:
-				return "mp_medal_gold";
+				return 'mp_medal_gold';
 			case BadgeStyle.SilverMedal:
-				return "medal_silver";
+				return 'medal_silver';
 			case BadgeStyle.Alert:
-				return "mp_alerttriangle";
+				return 'mp_alerttriangle';
 			case BadgeStyle.Crown:
-				return "mp_hostcrown";
+				return 'mp_hostcrown';
 			case BadgeStyle.Ammo:
-				return selected ? "shop_ammo_icon_b" : "shop_ammo_icon_a";
+				return selected ? 'shop_ammo_icon_b' : 'shop_ammo_icon_a';
 			case BadgeStyle.Armour:
-				return selected ? "shop_armour_icon_b" : "shop_armour_icon_a";
+				return selected ? 'shop_armour_icon_b' : 'shop_armour_icon_a';
 			case BadgeStyle.Barber:
-				return selected ? "shop_barber_icon_b" : "shop_barber_icon_a";
+				return selected ? 'shop_barber_icon_b' : 'shop_barber_icon_a';
 			case BadgeStyle.Clothes:
-				return selected ? "shop_clothing_icon_b" : "shop_clothing_icon_a";
+				return selected ? 'shop_clothing_icon_b' : 'shop_clothing_icon_a';
 			case BadgeStyle.Franklin:
-				return selected ? "shop_franklin_icon_b" : "shop_franklin_icon_a";
+				return selected ? 'shop_franklin_icon_b' : 'shop_franklin_icon_a';
 			case BadgeStyle.Bike:
-				return selected ? "shop_garage_bike_icon_b" : "shop_garage_bike_icon_a";
+				return selected ? 'shop_garage_bike_icon_b' : 'shop_garage_bike_icon_a';
 			case BadgeStyle.Car:
-				return selected ? "shop_garage_icon_b" : "shop_garage_icon_a";
+				return selected ? 'shop_garage_icon_b' : 'shop_garage_icon_a';
 			case BadgeStyle.Gun:
-				return selected ? "shop_gunclub_icon_b" : "shop_gunclub_icon_a";
+				return selected ? 'shop_gunclub_icon_b' : 'shop_gunclub_icon_a';
 			case BadgeStyle.Heart:
-				return selected ? "shop_health_icon_b" : "shop_health_icon_a";
+				return selected ? 'shop_health_icon_b' : 'shop_health_icon_a';
 			case BadgeStyle.Lock:
-				return "shop_lock";
+				return 'shop_lock';
 			case BadgeStyle.Makeup:
-				return selected ? "shop_makeup_icon_b" : "shop_makeup_icon_a";
+				return selected ? 'shop_makeup_icon_b' : 'shop_makeup_icon_a';
 			case BadgeStyle.Mask:
-				return selected ? "shop_mask_icon_b" : "shop_mask_icon_a";
+				return selected ? 'shop_mask_icon_b' : 'shop_mask_icon_a';
 			case BadgeStyle.Michael:
-				return selected ? "shop_michael_icon_b" : "shop_michael_icon_a";
+				return selected ? 'shop_michael_icon_b' : 'shop_michael_icon_a';
 			case BadgeStyle.Star:
-				return "shop_new_star";
-			case BadgeStyle.Tatoo:
-				return selected ? "shop_tattoos_icon_b" : "shop_tattoos_icon_";
+				return 'shop_new_star';
+			case BadgeStyle.Tattoo:
+				return selected ? 'shop_tattoos_icon_b' : 'shop_tattoos_icon_';
 			case BadgeStyle.Tick:
-				return "shop_tick_icon";
+				return 'shop_tick_icon';
 			case BadgeStyle.Trevor:
-				return selected ? "shop_trevor_icon_b" : "shop_trevor_icon_a";
+				return selected ? 'shop_trevor_icon_b' : 'shop_trevor_icon_a';
 			case BadgeStyle.Sale:
-				return "saleicon";
+				return 'saleicon';
 			case BadgeStyle.ArrowLeft:
-				return "arrowleft";
+				return 'arrowleft';
 			case BadgeStyle.ArrowRight:
-				return "arrowright";
+				return 'arrowright';
 			case BadgeStyle.Audio1:
-				return "leaderboard_audio_1";
+				return 'leaderboard_audio_1';
 			case BadgeStyle.Audio2:
-				return "leaderboard_audio_2";
+				return 'leaderboard_audio_2';
 			case BadgeStyle.Audio3:
-				return "leaderboard_audio_3";
+				return 'leaderboard_audio_3';
 			case BadgeStyle.AudioInactive:
-				return "leaderboard_audio_inactive";
+				return 'leaderboard_audio_inactive';
 			case BadgeStyle.AudioMute:
-				return "leaderboard_audio_mute";
+				return 'leaderboard_audio_mute';
 			default:
-				return "";
+				return '';
 		}
 	}
 
-	IsBagdeWhiteSprite(badge: BadgeStyle) {
+	IsBadgeWhiteSprite(badge: BadgeStyle) {
 		switch (badge) {
 			case BadgeStyle.Lock:
 			case BadgeStyle.Tick:
@@ -338,6 +289,25 @@ export default class UIMenuItem extends CustomVariables {
 					: new Color(255, 255, 255, 255);
 			default:
 				return new Color(255, 255, 255, 255);
+		}
+	}
+
+	get Text() {
+		return this._text.caption;
+	}
+
+	set Text(text) {
+		this._text.caption = text;
+	}
+
+	get Description() {
+		return this._description;
+	}
+
+	set Description(text) {
+		this._description = text;
+		if (this.hasOwnProperty('Parent')) {
+			this.Parent.recalculateDescriptionNextFrame += 1;
 		}
 	}
 }

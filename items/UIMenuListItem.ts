@@ -17,12 +17,6 @@ export default class UIMenuListItem extends UIMenuItem {
 	protected _arrowLeft: Sprite;
 	protected _arrowRight: Sprite;
 
-	private _holdTime: number;
-
-	public ScrollingEnabled: boolean = true;
-
-	public HoldTimeBeforeScroll: number = 200;
-
 	private currOffset: number = 0;
 
 	private collection: Array<ListItem> = [];
@@ -91,26 +85,9 @@ export default class UIMenuListItem extends UIMenuItem {
 		let y = 0;
 		this.Collection = collection.getListItems();
 		this.Index = startIndex;
-		this._arrowLeft = new Sprite(
-			'commonmenu',
-			'arrowleft',
-			new Point(110, 105 + y),
-			new Size(30, 30)
-		);
-		this._arrowRight = new Sprite(
-			'commonmenu',
-			'arrowright',
-			new Point(280, 105 + y),
-			new Size(30, 30)
-		);
-		this._itemText = new ResText(
-			'',
-			new Point(290, y + 104),
-			0.35,
-			Color.White,
-			Font.ChaletLondon,
-			Alignment.Right
-		);
+		this._arrowLeft = new Sprite('commonmenu', 'arrowleft', new Point(110, 105 + y), new Size(30, 30));
+		this._arrowRight = new Sprite('commonmenu', 'arrowright', new Point(280, 105 + y), new Size(30, 30));
+		this._itemText = new ResText('', new Point(290, y + 104), 0.35, Color.White, Font.ChaletLondon, Alignment.Right);
 	}
 
 	public setCollection(collection: ItemsCollection) {
@@ -118,36 +95,24 @@ export default class UIMenuListItem extends UIMenuItem {
 	}
 
 	public setCollectionItem(index: number, item: ListItem | string, resetSelection: boolean = true) {
-		// Placeholder for formatting
 		if (index > this.Collection.length) {
 			throw new Error('Index out of bounds');
 		}
-		// Placeholder for formatting
 		if (typeof item === 'string') {
 			item = new ListItem(item);
 		}
 
 		this.Collection.splice(index, 1, item);
 
-		// Placeholder for formatting
 		if (resetSelection) {
 			this.Index = 0;
 		}
 	}
 
 	public SetVerticalPosition(y: number) {
-		this._arrowLeft.pos = new Point(
-			300 + this.Offset.X + this.Parent.WidthOffset,
-			147 + y + this.Offset.Y
-		);
-		this._arrowRight.pos = new Point(
-			400 + this.Offset.X + this.Parent.WidthOffset,
-			147 + y + this.Offset.Y
-		);
-		this._itemText.pos = new Point(
-			300 + this.Offset.X + this.Parent.WidthOffset,
-			y + 147 + this.Offset.Y
-		);
+		this._arrowLeft.pos = new Point(300 + this.Offset.X + this.Parent.WidthOffset, 147 + y + this.Offset.Y);
+		this._arrowRight.pos = new Point(400 + this.Offset.X + this.Parent.WidthOffset, 147 + y + this.Offset.Y);
+		this._itemText.pos = new Point(300 + this.Offset.X + this.Parent.WidthOffset, y + 147 + this.Offset.Y);
 		super.SetVerticalPosition(y);
 	}
 
@@ -175,21 +140,14 @@ export default class UIMenuListItem extends UIMenuItem {
 
 		this._itemText.caption = caption;
 
-		this._arrowLeft.color = this.Enabled
-			? this.Selected
-				? this.HighlightedForeColor
-				: this.ForeColor
-			: new Color(163, 159, 148);
-		this._arrowRight.color = this.Enabled
-			? this.Selected
-				? this.HighlightedForeColor
-				: this.ForeColor
-			: new Color(163, 159, 148);
+		let arrowColor = this.Selected ? Color.Black : Color.WhiteSmoke;
+		if (!this.Enabled) {
+			arrowColor = new Color(163, 159, 148);
+		}
 
-		this._arrowLeft.pos = new Point(
-			390 - offset + this.Offset.X + this.Parent.WidthOffset, // 375
-			this._arrowLeft.pos.Y
-		);
+		this._arrowLeft.color = arrowColor;
+		this._arrowRight.color = arrowColor;
+		this._arrowLeft.pos = new Point(390 - offset + this.Offset.X + this.Parent.WidthOffset, /* 375*/ this._arrowLeft.pos.Y);
 
 		if (this.Selected) {
 			this._arrowLeft.Draw();
