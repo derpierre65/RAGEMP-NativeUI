@@ -1,9 +1,10 @@
 import ListItem from '../modules/ListItem';
 
 export default class ItemsCollection {
-	private items: any[];
+	private items: ListItem[] | string[] | number[];
 
-	constructor(items: any[]) {
+	constructor(items: ListItem[] | string[] | number[]) {
+		if (items.length === 0) throw new Error('ItemsCollection cannot be empty');
 		this.items = items;
 		if (this.getListItems().length === 0) {
 			throw new Error('ItemsCollection cannot be empty');

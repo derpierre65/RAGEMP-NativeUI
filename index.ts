@@ -45,7 +45,7 @@ export default class NativeUI extends CustomVariables {
 
 	public Children: Map<string, NativeUI>; // (UUIDV4, NativeUI)
 
-	private _titleScale: number = 1.15;
+	private readonly _defaultTitleScale: number = 1.15;
 	public WidthOffset: number = 0;
 
 	public MouseControlsEnabled: boolean = false;
@@ -65,7 +65,6 @@ export default class NativeUI extends CustomVariables {
 	public recalculateDescriptionNextFrame: number = 1;
 
 	public AUDIO_LIBRARY: string = 'HUD_FRONTEND_DEFAULT_SOUNDSET';
-
 	public AUDIO_UPDOWN: string = 'NAV_UP_DOWN';
 	public AUDIO_LEFTRIGHT: string = 'NAV_LEFT_RIGHT';
 	public AUDIO_SELECT: string = 'SELECT';
@@ -80,18 +79,40 @@ export default class NativeUI extends CustomVariables {
 		| UIMenuCheckboxItem)[] = [];
 
 	get TitleScale() {
-		return this._titleScale;
+		return this._title.scale;
 	}
 
 	set TitleScale(scale: number) {
-		this._titleScale = scale;
+		this._title.scale = scale;
+	}
+
+	GetTitle(): ResText {
+		return this._title;
+	}
+
+	get TitleText(): string {
+		return this._title.caption;
+	}
+	set TitleText(text: string) {
+		this._title.caption = text;
+	}
+
+	get SubTitle(): ResText {
+		return this._subtitle;
+	}
+
+	get SubTitleText(): string {
+		return this._subtitle.caption;
+	}
+	set SubTitleText(text: string) {
+		this._subtitle.caption = text;
 	}
 
 	get Visible() {
 		return this._visible;
 	}
 
-	set Visible(toggle: boolean) {
+	set Visible(toggle: boolean) { // Menu pools don't work with submenus
 		this._visible = toggle;
 		Common.PlaySound(this.AUDIO_BACK, this.AUDIO_LIBRARY);
 		/*if(!toggle) {
@@ -195,7 +216,7 @@ export default class NativeUI extends CustomVariables {
 	private readonly _counterText: ResText;
 	private readonly _background: Sprite;
 
-	constructor(title, subtitle, offset, spriteLibrary, spriteName) {
+	constructor(title: string, subtitle: string, offset: Point, spriteLibrary?: string, spriteName?: string) {
 		super();
 
 		if (!(offset instanceof Point)) {
@@ -225,7 +246,7 @@ export default class NativeUI extends CustomVariables {
 			(this._title = new ResText(
 				this.title,
 				new Point(215 + this.offset.X, 20 + this.offset.Y),
-				this._titleScale,
+				this._defaultTitleScale,
 				new Color(255, 255, 255),
 				1,
 				Alignment.Centered
@@ -453,7 +474,6 @@ export default class NativeUI extends CustomVariables {
 			this._minItem = 0;
 			return;
 		}
-
 		for (let i = 0; i < this.MenuItems.length; i++) {
 			this.MenuItems[i].Selected = false;
 		}
@@ -461,7 +481,9 @@ export default class NativeUI extends CustomVariables {
 		this._activeItem = 1000 - (1000 % this.MenuItems.length);
 		this._maxItem = this.MaxItemsOnScreen;
 		this._minItem = 0;
-		this.recalculateDescriptionNextFrame++;
+		if(this._visible) {
+			this.UpdateDescriptionCaption();
+		}
 	}
 
 	public Clear() {
@@ -473,15 +495,18 @@ export default class NativeUI extends CustomVariables {
 		this.Visible = true;
 	}
 
-	public Close(closeChildren: boolean = false) {
-		if (closeChildren) {
-			this.Children.forEach((m) => {
-				m.Close();
+	private CleanUp(closeChildren: boolean = false) {
+		if(closeChildren) {
+			this.Children.forEach(m => {
+				m.Close(true);
 			});
 		}
-
-		this.Visible = false;
 		this.RefreshIndex();
+	}
+
+	public Close(closeChildren: boolean = false) {
+		this.Visible = false;
+		this.CleanUp(closeChildren);
 		this.MenuClose.emit(true, this._hasSelectedMenuItem);
 	}
 
@@ -963,6 +988,8 @@ export default class NativeUI extends CustomVariables {
 		if (this.ParentMenu != null) {
 			this.ParentMenu.Visible = true;
 			this.MenuChange.emit(this.ParentMenu, false);
+		} else {
+			this.CleanUp(true);
 		}
 		this.MenuClose.emit(false, false);
 	}

@@ -15,7 +15,7 @@ export default class UIMenuSliderItem extends UIMenuItem {
 	private _index: number;
 	private readonly _items: any[];
 
-	constructor(text: string, items: any[], index: number = 0, description: string = '', divider: boolean = false, data = null) {
+	constructor(text: string, items: any[], index: number = 0, description: string = '', divider: boolean = false, data:any = null) {
 		if (items.length < 2) {
 			throw new Error('invalid item count, required more or equal 2 items');
 		}

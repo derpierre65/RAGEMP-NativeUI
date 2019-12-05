@@ -28,7 +28,7 @@ export default class UIMenuDynamicListItem extends UIMenuItem {
 
 	private _value: number;
 
-	constructor(text: string, description: string = '', lowerThreshold: number = 0, upperThreshold: number = 10, startValue: number = 0, data = null) {
+	constructor(text: string, description: string = '', lowerThreshold: number = 0, upperThreshold: number = 10, startValue: number = 0, data:any = null) {
 		super(text, description, data);
 
 		let y = 0;

@@ -3,8 +3,8 @@
 	"version": "1.0.0",
 	"description": "RageMP NativeUI",
 	"main": "index.js",
-	"repository": "https://github.com/XMGamingMaster/RageMP-NativeUI.git",
-	"author": "GamingMaster",
+	"repository": "https://github.com/karimcambridge/RAGEMP-NativeUI.git",
+	"author": "GamingMaster | Kar | derpierre65",
 	"license": "Apache-2.0",
 	"private": false,
 	"scripts": {

@@ -49,12 +49,6 @@ export default class UIMenuListItem extends UIMenuItem {
 				: this.SelectedItem.Data;
 	}
 
-	private readonly OnListChanged = new LiteEvent();
-
-	public get ListChanged() {
-		return this.OnListChanged.expose();
-	}
-
 	protected _index: number = 0;
 
 	get Index() {
@@ -79,7 +73,7 @@ export default class UIMenuListItem extends UIMenuItem {
 		// this._itemText && this._itemText.font ? this._itemText.font : 0, this._itemText && this._itemText.scale ? this._itemText.scale : 0.35
 	}
 
-	constructor(text: string, description: string = '', collection: ItemsCollection = new ItemsCollection([]), startIndex: number = 0, data = null) {
+	constructor(text: string, description: string = '', collection: ItemsCollection = new ItemsCollection([]), startIndex: number = 0, data: any = null) {
 		super(text, description, data);
 
 		let y = 0;

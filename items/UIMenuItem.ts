@@ -52,9 +52,8 @@ export default class UIMenuItem extends CustomVariables {
 
 	public readonly OnSelect = new LiteEvent();
 
-	constructor(text, description = '', data = null) {
+	constructor(text: string, description: string = '', data: any = null) {
 		super();
-
 		this.Enabled = true;
 		this.Data = data;
 		this.Description = description;
@@ -307,7 +306,7 @@ export default class UIMenuItem extends CustomVariables {
 	set Description(text) {
 		this._description = text;
 		if (this.hasOwnProperty('Parent')) {
-			this.Parent.recalculateDescriptionNextFrame += 1;
+			this.Parent.UpdateDescriptionCaption();
 		}
 	}
 }
