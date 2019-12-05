@@ -23,7 +23,7 @@ export default class UIMenuListItem extends UIMenuItem {
 		super(text, description, data);
 
 		let y = 0;
-		this.Collection = collection.getListItems();
+		this.Collection = collection.Items;
 		this.Index = startIndex;
 		this._arrowLeft = new Sprite('commonmenu', 'arrowleft', new Point(110, 105 + y), new Size(30, 30));
 		this._arrowRight = new Sprite('commonmenu', 'arrowright', new Point(280, 105 + y), new Size(30, 30));
@@ -31,7 +31,7 @@ export default class UIMenuListItem extends UIMenuItem {
 	}
 
 	public setCollection(collection: ItemsCollection) {
-		this.Collection = collection.getListItems();
+		this.Collection = collection.Items;
 	}
 
 	public setCollectionItem(index: number, item: ListItem | string, resetSelection: boolean = true) {

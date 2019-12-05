@@ -18,7 +18,7 @@ export default class UIMenuItem extends CustomVariables {
 	public static readonly DefaultHighlightedForeColor: Color = Color.Black;
 
 	public readonly Id: string = UUIDV4();
-	public Name: string = 'unknown';
+	public Name: string | null = null;
 	private _event: { event: string; args: any[] };
 
 	protected _rectangle: ResRectangle;

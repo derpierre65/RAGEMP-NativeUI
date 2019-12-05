@@ -1171,7 +1171,9 @@ export default class NativeUI extends CustomVariables {
 	get Values() {
 		let obj = {};
 		for (let item of this.MenuItems) {
-			obj[item.Name] = item.Value;
+			if (item.Name) {
+				obj[item.Name] = item.Value;
+			}
 		}
 
 		return obj;
